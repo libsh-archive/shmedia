@@ -8,7 +8,7 @@ SUBDIRS = textures
 all: recurse-all
 
 recurse-all:
-	for i in $(SUBDIRS) ; do cd $i && $(MAKE) && cd .. ; done
+	for i in $(SUBDIRS) ; do cd $$i && $(MAKE) && cd .. ; done
 
 dist:
 	rm -rf $(DISTDIR)
