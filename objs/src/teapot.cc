@@ -16,7 +16,7 @@
 // the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 // Boston, MA 02111-1307, USA.
 
-// $Id: teapot.cc,v 1.1 2003/10/27 17:17:08 krmoule Exp $
+// $Id: teapot.cc,v 1.2 2004/02/19 20:11:17 sjdutoit Exp $
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -500,8 +500,8 @@ int main(int argc, char** argv)
 	    if (texcoords)
 	      {
 	      printf("vt %f %ff\n",
-		     ((double)i/u),
-		     ((double)j/v));
+		     ((double)i/nu),
+		     ((double)j/nv));
 	      }
 
 	    if (tangents)
@@ -523,8 +523,8 @@ int main(int argc, char** argv)
 	    if (texcoords)
 	      {
 	      printf("vt %f %ff\n",
-		     ((double)i/u),
-		     ((double)j/v));
+		     ((double)i/nu),
+		     ((double)j/nv));
 	      }
 
 	    if (tangents)
@@ -546,8 +546,8 @@ int main(int argc, char** argv)
 	    if (texcoords)
 	      {
 	      printf("vt %f %ff\n",
-		     ((double)i/u),
-		     ((double)j/v));
+		     ((double)i/nu),
+		     ((double)j/nv));
 	      }
 
 	    if (tangents)
