@@ -1,7 +1,7 @@
 VERSION = 0.7.1
 DISTDIR = shmedia-$(VERSION)
 
-DISTFILES = README brdfs envmaps textures objs mats bumpmaps
+DISTFILES = ChangeLog README brdfs envmaps horizonmaps textures objs mats bumpmaps
 
 SUBDIRS = textures
 
@@ -19,6 +19,8 @@ dist:
 	tar cf $(DISTDIR).tar $(DISTDIR)
 	bzip2 -k $(DISTDIR).tar
 	gzip $(DISTDIR).tar
+	rm -f $(DISTDIR).zip
+	zip -r $(DISTDIR).zip $(DISTDIR)
 	rm -rf $(DISTDIR)
 
 clean:
