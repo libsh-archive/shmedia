@@ -47,10 +47,10 @@ struct patch_set_t
     patch_t* p;
     bool u_flip;
     bool v_flip;
-    float u_scale;
-    float v_scale;
-    float u_bias;
-    float v_bias;
+    double u_scale;
+    double v_scale;
+    double u_bias;
+    double v_bias;
   };
 
 //-------------------------------------------------------------------
@@ -171,10 +171,15 @@ point_t cpts[] = {
   { 1.3000, 2.55000, -0.7280 },
   { 0.7280, 2.55000, -1.3000 },
   { 0.0000, 2.55000, -1.3000 },
-  { 1.3000, 2.40000, 0.0000 },
-  { 1.3000, 2.40000, -0.7280 },
-  { 0.7280, 2.40000, -1.3000 },
-  { 0.0000, 2.40000, -1.3000 },
+  // The next 4 control points affect the outer edge
+  // of the lid. They have been moved slightly to remove
+  // the gap between the lid and the body. For the sake of
+  // completeness, the original values are list in the
+  // adjacent comments...
+  { 1.4000, 2.40000, 0.0000 },  // 1.300, 2.4,  0.000
+  { 1.4000, 2.40000, -0.7480 }, // 1.300, 2.4, -0.728
+  { 0.7480, 2.40000, -1.4000 }, // 0.728, 2.4, -1.300
+  { 0.0000, 2.40000, -1.4000 }, // 0.000, 2.4, -1.300
   { 0.0000, 0.00000, 0.0000 },
   { 1.4250, 0.00000, -0.7980 },
   { 1.5000, 0.07500, 0.0000 },
@@ -371,6 +376,25 @@ patch_set_t patches[3][NUM_PATCHES] = {
 };
 
 //-------------------------------------------------------------------
+// norm
+//-------------------------------------------------------------------
+void norm(point_t& p)
+  {
+  double l = 1/sqrt(p[0]*p[0] + p[1]*p[1] + p[2]*p[2]); 
+  p[0] *= l;
+  p[1] *= l;
+  p[2] *= l;
+  }
+
+//-------------------------------------------------------------------
+// len
+//-------------------------------------------------------------------
+double len(point_t& p)
+  {
+  return sqrt(p[0]*p[0] + p[1]*p[1] + p[2]*p[2]); 
+  }
+
+//-------------------------------------------------------------------
 // usage
 //-------------------------------------------------------------------
 void usage(void)
@@ -479,6 +503,62 @@ void eval_surface(const patch_t& p,
   }
 
 //-------------------------------------------------------------------
+// bisect
+//-------------------------------------------------------------------
+void bisect(const patch_t& p, 
+	    double u0, double v0,
+	    double u, double v,
+	    point_t* du, point_t* dv)
+  {
+  // evaluate the starting end of the bisection
+  // to get a initial, but crude, tangent vector
+  point_t r;
+  point_t tdu;
+  point_t tdv;
+  eval_surface(p, u0, v0, &r, &tdu, &tdv);
+
+  // if the starting point of the bisection is bad
+  // then we have real problems...
+  if (len(tdu) < 1e-10 || len(tdv) < 1e-10)
+    {
+    fprintf(stderr, "bisection failed...\n");
+    return;
+    }
+
+  int steps = 0;
+  while(1)
+    {
+    if (steps == 40)
+      {
+      fprintf(stderr, "bisection aborted, too many iterations...\n");
+      return;
+      }
+
+    double mu = (u0 + u)/2;
+    double mv = (v0 + v)/2;
+    point_t mdu;
+    point_t mdv;
+    eval_surface(p, mu, mv, &r, &mdu, &mdv);
+
+    if (len(mdu) < 1e-10 || len(mdv) < 1e-10)
+      {
+      // the current iteration produced a bad set of tangents vector, we
+      // are done, return the tangent vectors from the previous
+      // iteration
+      for(int i = 0; i < 3; i++) (*du)[i] = tdu[i];
+      for(int i = 0; i < 3; i++) (*dv)[i] = tdv[i];
+      return;
+      }
+
+    u0 = mu;
+    v0 = mv;
+    for(int i = 0; i < 3; i++) tdu[i] = mdu[i];
+    for(int i = 0; i < 3; i++) tdv[i] = mdv[i];
+    steps++;
+    }
+  }
+
+//-------------------------------------------------------------------
 // main
 //-------------------------------------------------------------------
 int main(int argc, char** argv)
@@ -546,31 +626,56 @@ int main(int argc, char** argv)
 	point_t dv;
 	eval_surface(*(patches[idx][p].p), u, v, &r, &du, &dv);
 
+	// evaluate length of tangent vectors, if they are close
+	// to zero we need todo some additional work
+	if (len(du) < 1e-10 || len(dv) < 1e-10)
+	  {
+	  double u0;
+	  double v0;
+
+	  if (i == nu)
+	    {
+	    u0 = ((double)(i-1)/nu);
+	    }
+	  else
+	    {
+	    u0 = ((double)(i+1)/nu);
+	    }
+	  
+	  if (j == nv)
+	    {
+	    v0 = ((double)(j-1)/nv);
+	    }
+	  else
+	    {
+	    v0 = ((double)(j+1)/nv);
+	    }
+
+	  bisect(*(patches[idx][p].p), u0, v0, u, v, &du, &dv);
+	  }
+
+	// normalize du & dv
+	norm(du);
+	norm(dv);
+
 	// cross two tangents to get normal
 	point_t n;
 	n[0] = dv[1]*du[2] - du[1]*dv[2];
 	n[1] = dv[2]*du[0] - du[2]*dv[0];
 	n[2] = dv[0]*du[1] - du[0]*dv[1];
+	norm(n);
 
-	// normalize normal
-	double n_len = 1/sqrt(n[0]*n[0] + n[1]*n[1] + n[2]*n[2]);
-	n[0] *= n_len;
-	n[1] *= n_len;
-	n[2] *= n_len;
+	double s = (patches[idx][p].u_scale*(patches[idx][p].u_flip ? (1-u) : u) +
+		    patches[idx][p].u_bias);
+	double t = (patches[idx][p].v_scale*(patches[idx][p].v_flip ? (1-v) : v) +
+		    patches[idx][p].v_bias);
 
-	// normalize tangent
-	double du_len = 1/sqrt(du[0]*du[0] + du[1]*du[1] + du[2]*du[2]);
-	du[0] *= du_len;
-	du[1] *= du_len;
-	du[2] *= du_len;
-
-	for(int i = 0; i < 3; i++) if (isnan(n[i])) n[i] = 0;
-	for(int i = 0; i < 3; i++) if (isnan(du[i])) du[i] = 0;
-
-	float s = (patches[idx][p].u_scale*(patches[idx][p].u_flip ? (1-u) : u) +
-		   patches[idx][p].u_bias);
-	float t = (patches[idx][p].v_scale*(patches[idx][p].v_flip ? (1-v) : v) +
-		   patches[idx][p].v_bias);
+	if (patches[idx][p].u_flip)
+	  {
+	  du[0] = -du[0];
+	  du[1] = -du[1];
+	  du[2] = -du[2];
+	  }
 
 	switch(patches[idx][p].mirror)
 	  {
