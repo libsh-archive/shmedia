@@ -3,6 +3,8 @@ DISTDIR = shmedia-$(VERSION)
 
 DISTFILES = README brdfs envmaps textures
 
+all: dist
+
 dist:
 	rm -rf $(DISTDIR)
 	mkdir $(DISTDIR)
