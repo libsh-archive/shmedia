@@ -1,3 +1,7 @@
+2004-07-13  Stefanus Du Toit  <sjdutoit@uwaterloo.ca>
+
+	* objs/sg04.obj: Added SIGGRAPH 2004 logo.
+
 2004-06-07  Sylvain Vasseur  <sfvvasse@cgl.uwaterloo.ca>
 
 	* horizonmaps/: Recomputed some horizon maps with smaller bumps.
