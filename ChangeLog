@@ -1,3 +1,21 @@
+2004-07-14  Kevin Moule  <krmoule@uwaterloo.ca>
+
+	* objs/src/teapot.cc: Teapot generation changed to
+	fix singularity problems, lid enlarged to fill gaps,
+	and texture coordinate generation modes added.
+
+	* objs/teapot.obj: Original teapot model with problems
+	fixed. Texture coordinates are [0, 1] for each individual
+	patch.
+
+	* objs/teapot2.obj: Texture coordinates span across several
+	patches such that each part (i.e body, bottom, lid, handle
+	and spout) shares a global parameterization.
+
+	* objs/teapot3.obj: Similiar to teapot2.obj but the texture
+	coordinates loop from 0 -> 1 -> 0 so that many of the
+	seams/discontinuities are hidden.
+
 2004-07-13  Stefanus Du Toit  <sjdutoit@uwaterloo.ca>
 
 	* objs/sg04.obj: Added SIGGRAPH 2004 logo.
