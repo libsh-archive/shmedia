@@ -1,7 +1,7 @@
-VERSION = 0.7.1
+VERSION = 0.7.2
 DISTDIR = shmedia-$(VERSION)
 
-DISTFILES = ChangeLog README brdfs envmaps horizonmaps textures objs mats bumpmaps
+DISTFILES = ChangeLog README brdfs envmaps horizonmaps textures objs mats bumpmaps sparse
 
 SUBDIRS = textures
 
