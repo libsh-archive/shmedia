@@ -1,0 +1,4 @@
+Dupont Cayman Lacquer + Specular (64x64)
+1
+5.04597e-05 0.019342 0.0237338
+50.309998

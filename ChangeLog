@@ -1,3 +1,9 @@
+2004-03-24  Michael McCool  <mmccool@uwaterloo.ca>
+
+	* bumpmaps/: Added a simple bump map and an associated normal map
+	* brdfs/: Imported more factorized brdfs from brdfview
+	* mats/: Imported a number of alpha mat/material maps from brdfview
+
 2004-03-09  Stefanus Du Toit  <sjdutoit@uwaterloo.ca>
 
 	* objs/s.obj: Added this model for the Sh Logo.

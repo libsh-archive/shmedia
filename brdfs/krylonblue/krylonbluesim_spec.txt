@@ -1,0 +1,5 @@
+Krylon Latex Enamel #7205, True Blue Specular-only (Simulated)
+2
+11.4187 0.0555595 0.0841939
+19.690001
+#specular term from garnetrednew64 (garnet_red_s_h_6_0.png)

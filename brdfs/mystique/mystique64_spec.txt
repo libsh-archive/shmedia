@@ -1,0 +1,4 @@
+Mystique Lacquer Specular-only (64x64)
+2
+0.0011786 0.165452 0.0338959
+9.42
