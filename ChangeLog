@@ -1,3 +1,11 @@
+2004-06-07  Sylvain Vasseur  <sfvvasse@cgl.uwaterloo.ca>
+
+	* horizonmaps/: Recomputed some horizon maps with smaller bumps.
+
+2004-05-31  Sylvain Vasseur  <sfvvasse@cgl.uwaterloo.ca>
+
+	* horizonmaps/: Added some texture files used for horizon mapping.
+
 2004-03-24  Michael McCool  <mmccool@uwaterloo.ca>
 
 	* bumpmaps/: Added a simple bump map and an associated normal map
