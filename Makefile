@@ -15,7 +15,7 @@ recurse-all:
 dist:   clean
 	rm -rf $(DISTDIR)
 	mkdir $(DISTDIR)
-	cp -a $(DISTFILES) $(DISTDIR)
+	cp -dpR $(DISTFILES) $(DISTDIR)
 	rm -rf `find $(DISTDIR) -name ".depends" -o -name .done -o -name .svn -o -name CVS -o -name ".#*" -o -name "*~" -o -name nodist`
 	cd $(DISTDIR) ; $(MAKE) all ; cd ..
 	rm -rf `find $(DISTDIR) -name ".depends" -o -name .done -o -name .svn -o -name CVS -o -name ".#*" -o -name "*~" -o -name nodist -o -name dist`
@@ -26,10 +26,9 @@ dist:   clean
 	rm -f $(DISTDIR).zip
 	zip -r $(DISTDIR).zip $(DISTDIR)
 	rm -rf $(DISTDIR)
-
 	rm -rf $(HDR_DISTDIR)
 	mkdir $(HDR_DISTDIR)
-	cp -a $(HDR_DISTFILES) $(HDR_DISTDIR)
+	cp -dpR $(HDR_DISTFILES) $(HDR_DISTDIR)
 	rm -rf `find $(HDR_DISTDIR) -name ".depends" -o -name .done -o -name .svn -o -name CVS -o -name ".#*" -o -name "*~" -o -name nodist -o -name dist`
 	rm -f $(HDR_DISTDIR).tar.gz
 	tar cf $(HDR_DISTDIR).tar $(HDR_DISTDIR)
